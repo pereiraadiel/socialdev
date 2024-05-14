@@ -23,11 +23,23 @@ model User {
   password   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  fans        Fanbase[]         @relation("fanbase")
+  heroes      Fanbase[]         @relation("hero")
+  myFriends   Friendship[]      @relation("userfriend")
+  friends     Friendship[]      @relation("friend")
+  skills      UserSkill[]       @relation("userskill")
+  skillVotes  UserSkill[]       @relation("voter")
+  communities CommunityMember[]
+  depoiments  Depoiment[]
 }
 
 model Fanbase {
   userId    String
   fanUserId String
+
+  user User @relation("fanbase", fields: [userId], references: [id], map: "fanbase_userId_fk")
+  fan  User @relation("hero", fields: [userId], references: [id], map: "fanbase_fanUserId_fk")
 
   @@id([userId, fanUserId])
 }
@@ -38,6 +50,8 @@ model Skill {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  users UserSkill[] @relation("skill")
 }
 
 model UserSkill {
@@ -46,6 +60,10 @@ model UserSkill {
   voterId    String
   evaluation Int
 
+  user  User  @relation("userskill", fields: [userId], references: [id], map: "userskill_userId_fk")
+  skill Skill @relation("skill", fields: [skillId], references: [id], map: "userskill_skillId_fk")
+  voter User  @relation("voter", fields: [voterId], references: [id], map: "userskill_voterId_fk")
+
   @@id([userId, skillId])
 }
 
@@ -53,6 +71,9 @@ model Friendship {
   userId    String
   friendId  String
   createdAt DateTime @default(now())
+
+  user   User @relation("userfriend", fields: [userId], references: [id], map: "friendship_userId_fk")
+  friend User @relation("friend", fields: [friendId], references: [id], map: "friendship_friendId_fk")
 
   @@id([userId, friendId])
 }
@@ -72,12 +93,18 @@ model Community {
   visibility  CommunityVisibility
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
+
+  members    CommunityMember[]
+  depoiments CommunityDepoiment[]
 }
 
 model CommunityMember {
   userId      String
   communityId String
   createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], map: "communitymember_userId_fk")
+  community Community @relation(fields: [communityId], references: [id], map: "communitymember_communityId_fk")
 
   @@id([userId, communityId])
 }
@@ -88,11 +115,17 @@ model Depoiment {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  communities CommunityDepoiment[]
+  user        User                 @relation(fields: [userId], references: [id], map: "depoiment_userId_fk")
 }
 
 model CommunityDepoiment {
   communityId String
   depoimentId String
+
+  community Community @relation(fields: [communityId], references: [id], map: "communitydepoiment_communityId_fk")
+  depoiment Depoiment @relation(fields: [depoimentId], references: [id], map: "communitydepoiment_depoimentId_fk")
 
   @@id([communityId, depoimentId])
 }
