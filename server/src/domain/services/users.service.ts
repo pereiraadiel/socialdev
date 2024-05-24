@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { UserViewer, UserViewerType } from '../viewers/user.viewer';
 import { UsersRepository } from '../repositories/users.repository';
 import { CryptUtil } from '../../utils/crypt.util';
 
+@Injectable()
 export class UsersService {
   constructor(
     private usersRepository: UsersRepository,

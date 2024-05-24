@@ -1,5 +1,6 @@
 import { UserEntity } from '../entities/user.entity';
 
+export const USERS_REPOSITORY = 'USERS_REPOSITORY';
 export interface UsersRepository {
   create(user: UserEntity): Promise<UserEntity>;
   findById(id: string): Promise<UserEntity | null>;

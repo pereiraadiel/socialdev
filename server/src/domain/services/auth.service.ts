@@ -1,15 +1,22 @@
 import {
+  Inject,
+  Injectable,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { UsersRepository } from '../repositories/users.repository';
+import {
+  USERS_REPOSITORY,
+  UsersRepository,
+} from '../repositories/users.repository';
 import { CryptUtil } from '../../utils/crypt.util';
 import { UserViewer, UserViewerType } from '../viewers/user.viewer';
 import JWT from 'jsonwebtoken';
 import { AuthConstants } from '../../constants/auth.constant';
 
+@Injectable()
 export class AuthService {
   constructor(
+    @Inject(USERS_REPOSITORY)
     private readonly userRepository: UsersRepository,
     private readonly userViewer: UserViewer,
   ) {}
@@ -38,6 +45,7 @@ export class AuthService {
         user: payload,
       };
     } catch (error) {
+      console.error(error);
       if (error instanceof UnauthorizedException) {
         throw new UnauthorizedException(error.message);
       }

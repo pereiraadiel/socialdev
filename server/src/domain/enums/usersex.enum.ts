@@ -1,6 +1,6 @@
 export const UserSex = {
-  MALE: 0,
-  FEMALE: 1,
-};
+  MALE: 'MALE',
+  FEMALE: 'FEMALE',
+} as const;
 
 export type UserSex = (typeof UserSex)[keyof typeof UserSex];

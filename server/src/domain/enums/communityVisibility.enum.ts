@@ -1,7 +1,7 @@
 export const CommunityVisibility = {
-  PUBLIC: 0,
-  PRIVATE: 1,
-};
+  PUBLIC: 'PUBLIC',
+  PRIVATE: 'PRIVATE',
+} as const;
 
 export type CommunityVisibility =
   (typeof CommunityVisibility)[keyof typeof CommunityVisibility];
