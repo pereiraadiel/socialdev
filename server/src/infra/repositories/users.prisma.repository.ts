@@ -36,6 +36,8 @@ export class UsersPrismaRepository implements UsersRepository {
       },
     });
 
+    if (!entity) return null;
+
     return new UserEntity(entity);
   }
 
@@ -45,6 +47,8 @@ export class UsersPrismaRepository implements UsersRepository {
         username,
       },
     });
+
+    if (!entity) return null;
 
     return new UserEntity(entity);
   }
@@ -82,6 +86,8 @@ export class UsersPrismaRepository implements UsersRepository {
         depoiments: undefined,
       },
     });
+
+    if (!entity) return null;
 
     return new UserEntity(entity);
   }

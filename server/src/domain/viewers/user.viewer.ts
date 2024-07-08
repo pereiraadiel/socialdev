@@ -18,6 +18,14 @@ export class UserViewer {
     };
   }
 
+  payloadResponse() {
+    return {
+      id: this.entity.id,
+      username: this.entity.username,
+      fullname: `${this.entity.firstName} ${this.entity.lastName}`,
+    };
+  }
+
   response() {
     return {
       ...this.maskedResponse(),

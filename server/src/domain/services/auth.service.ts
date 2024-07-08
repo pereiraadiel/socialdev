@@ -10,8 +10,8 @@ import {
 } from '../repositories/users.repository';
 import { CryptUtil } from '../../utils/crypt.util';
 import { UserViewer, UserViewerType } from '../viewers/user.viewer';
-import JWT from 'jsonwebtoken';
-import { AuthConstants } from '../../constants/auth.constant';
+import { TokenUtil } from '../../utils/token.util';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -35,13 +35,15 @@ export class AuthService {
         throw new UnauthorizedException('Invalid credentials');
       }
 
-      const payload = this.userViewer.setUser(user).maskedResponse();
-      const token = JWT.sign(payload, AuthConstants.secret, {
-        expiresIn: '1d',
-      });
+      const payload = this.userViewer.setUser(user).payloadResponse();
+      const accessToken = TokenUtil.sign(payload);
+      const refreshToken = TokenUtil.sign(payload, '3d');
 
       return {
-        token,
+        token: {
+          access: accessToken,
+          refresh: refreshToken,
+        },
         user: payload,
       };
     } catch (error) {
@@ -53,9 +55,42 @@ export class AuthService {
     }
   }
 
+  async refresh(refreshToken: string) {
+    try {
+      const isTokenValid = TokenUtil.validate(refreshToken);
+      if (!isTokenValid) {
+        throw new UnauthorizedException();
+      }
+      const payload = isTokenValid as UserViewerType;
+
+      delete payload['iat'];
+      delete payload['exp'];
+
+      const newAccessToken = TokenUtil.sign(payload);
+      const newRefreshToken = TokenUtil.sign(payload, '3d');
+
+      return {
+        token: {
+          access: newAccessToken,
+          refresh: newRefreshToken,
+        },
+        user: payload,
+      };
+    } catch (error) {
+      console.error(error);
+      if (error instanceof UnauthorizedException) {
+        throw new UnauthorizedException(error.message);
+      }
+      if (error instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token expired');
+      }
+      throw new UnprocessableEntityException();
+    }
+  }
+
   async validateUser(token: string) {
     try {
-      const isTokenValid = JWT.verify(token, AuthConstants.secret);
+      const isTokenValid = TokenUtil.validate(token);
       if (!isTokenValid) {
         throw new UnauthorizedException();
       }
