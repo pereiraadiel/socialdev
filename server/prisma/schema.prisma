@@ -13,7 +13,7 @@ enum Sex {
 }
 
 model User {
-  id         String   @id @default(cuid())
+  id         String   @id @default(nanoid())
   firstName  String
   lastName   String
   biography  String
@@ -24,14 +24,16 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  fans        Fanbase[]         @relation("fanbase")
-  heroes      Fanbase[]         @relation("hero")
-  myFriends   Friendship[]      @relation("userfriend")
-  friends     Friendship[]      @relation("friend")
-  skills      UserSkill[]       @relation("userskill")
-  skillVotes  UserSkill[]       @relation("voter")
-  communities CommunityMember[]
-  depoiments  Depoiment[]
+  fans               Fanbase[]         @relation("fanbase")
+  heroes             Fanbase[]         @relation("hero")
+  myFriends          Friendship[]      @relation("userfriend")
+  friends            Friendship[]      @relation("friend")
+  skills             UserSkill[]       @relation("userskill")
+  skillVotes         UserSkill[]       @relation("voter")
+  communities        CommunityMember[]
+  depoiments         Depoiment[]
+  givenFriendRequest FriendRequest[]   @relation("given_request") // solicitações de amizade que o usuário recebeu
+  sentFriendRequest  FriendRequest[]   @relation("sent_request") // solicitações de amizade que o usuário fez
 }
 
 model Fanbase {
@@ -45,7 +47,7 @@ model Fanbase {
 }
 
 model Skill {
-  id          String   @id @default(cuid())
+  id          String   @id @default(nanoid())
   name        String
   description String
   createdAt   DateTime @default(now())
@@ -78,13 +80,24 @@ model Friendship {
   @@id([userId, friendId])
 }
 
+model FriendRequest {
+  requesterId String
+  requestedId String
+  createdAt   DateTime @default(now())
+
+  requester User @relation("sent_request", fields: [requesterId], references: [id], map: "friendrequest_requesterId_fk")
+  requested User @relation("given_request", fields: [requestedId], references: [id], map: "friendrequest_requestedId_fk")
+
+  @@id([requesterId, requestedId])
+}
+
 enum CommunityVisibility {
   PUBLIC
   PRIVATE
 }
 
 model Community {
-  id          String              @id @default(cuid())
+  id          String              @id @default(nanoid())
   name        String
   description String
   pictureURL  String
@@ -110,7 +123,7 @@ model CommunityMember {
 }
 
 model Depoiment {
-  id        String   @id @default(cuid())
+  id        String   @id @default(nanoid())
   userId    String
   content   String
   createdAt DateTime @default(now())

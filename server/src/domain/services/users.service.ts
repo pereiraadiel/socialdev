@@ -1,18 +1,23 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
 import { UserViewer, UserViewerType } from '../viewers/user.viewer';
-import { UsersRepository } from '../repositories/users.repository';
+import {
+  USERS_REPOSITORY,
+  UsersRepository,
+} from '../repositories/users.repository';
 import { CryptUtil } from '../../utils/crypt.util';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private usersRepository: UsersRepository,
+    @Inject(USERS_REPOSITORY)
+    private readonly usersRepository: UsersRepository,
     private readonly userViewer: UserViewer,
   ) {}
 
@@ -70,7 +75,7 @@ export class UsersService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      return this.userViewer.setUser(user).response();
+      return this.userViewer.setUser(user).maskedResponse();
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new NotFoundException(error);

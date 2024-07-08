@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Inject,
   Injectable,
   UnauthorizedException,
@@ -12,6 +13,8 @@ import { CryptUtil } from '../../utils/crypt.util';
 import { UserViewer, UserViewerType } from '../viewers/user.viewer';
 import { TokenUtil } from '../../utils/token.util';
 import { TokenExpiredError } from 'jsonwebtoken';
+import { SignUpBodyDTO } from '../../infra/controllers/dtos/auth.dto';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -50,6 +53,33 @@ export class AuthService {
       console.error(error);
       if (error instanceof UnauthorizedException) {
         throw new UnauthorizedException(error.message);
+      }
+      throw new UnprocessableEntityException();
+    }
+  }
+
+  async register(dto: SignUpBodyDTO) {
+    try {
+      const entity = new UserEntity(dto);
+      const userExists = await this.userRepository.findByUsername(
+        entity.username,
+      );
+      if (userExists) {
+        throw new ConflictException('Username already exists');
+      }
+
+      const password = await CryptUtil.hash(entity.password);
+      delete entity.password;
+
+      const user = await this.userRepository.create({
+        ...entity,
+        password,
+      });
+
+      return this.userViewer.setUser(user).response();
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error);
       }
       throw new UnprocessableEntityException();
     }

@@ -13,6 +13,7 @@ export class UserViewer {
     return {
       id: this.entity.id,
       username: this.entity.username,
+      pictureURL: this.entity.pictureURL,
       createdAt: this.entity.createdAt,
       updatedAt: this.entity.updatedAt,
     };

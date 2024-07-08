@@ -24,7 +24,7 @@ export class UserEntity extends Entity {
   communities?: CommunityMemberJoinEntity[];
   depoiments?: CommunityDepoimentJoinEntity[];
 
-  constructor(user: Omit<UserEntity, 'createdAt'>, id?: string) {
+  constructor(user: Omit<UserEntity, 'createdAt' | 'id'>, id?: string) {
     super(user, id);
     Object.assign(this, user);
 

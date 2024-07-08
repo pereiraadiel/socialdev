@@ -59,6 +59,15 @@ CREATE TABLE "Friendship" (
 );
 
 -- CreateTable
+CREATE TABLE "FriendRequest" (
+    "requesterId" TEXT NOT NULL,
+    "requestedId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "FriendRequest_pkey" PRIMARY KEY ("requesterId","requestedId")
+);
+
+-- CreateTable
 CREATE TABLE "Community" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -106,3 +115,45 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Community_slug_key" ON "Community"("slug");
+
+-- AddForeignKey
+ALTER TABLE "Fanbase" ADD CONSTRAINT "fanbase_userId_fk" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Fanbase" ADD CONSTRAINT "fanbase_fanUserId_fk" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserSkill" ADD CONSTRAINT "userskill_userId_fk" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserSkill" ADD CONSTRAINT "userskill_skillId_fk" FOREIGN KEY ("skillId") REFERENCES "Skill"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserSkill" ADD CONSTRAINT "userskill_voterId_fk" FOREIGN KEY ("voterId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Friendship" ADD CONSTRAINT "friendship_userId_fk" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Friendship" ADD CONSTRAINT "friendship_friendId_fk" FOREIGN KEY ("friendId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FriendRequest" ADD CONSTRAINT "friendrequest_requesterId_fk" FOREIGN KEY ("requesterId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FriendRequest" ADD CONSTRAINT "friendrequest_requestedId_fk" FOREIGN KEY ("requestedId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommunityMember" ADD CONSTRAINT "communitymember_userId_fk" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommunityMember" ADD CONSTRAINT "communitymember_communityId_fk" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Depoiment" ADD CONSTRAINT "depoiment_userId_fk" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommunityDepoiment" ADD CONSTRAINT "communitydepoiment_communityId_fk" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommunityDepoiment" ADD CONSTRAINT "communitydepoiment_depoimentId_fk" FOREIGN KEY ("depoimentId") REFERENCES "Depoiment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
