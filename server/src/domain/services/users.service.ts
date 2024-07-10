@@ -69,6 +69,21 @@ export class UsersService {
     }
   }
 
+  async getMe(id: string): Promise<UserViewerType> {
+    try {
+      const user = await this.usersRepository.findById(id);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return this.userViewer.setUser(user).response();
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error);
+      }
+      throw new UnprocessableEntityException();
+    }
+  }
+
   async getById(id: string): Promise<UserViewerType> {
     try {
       const user = await this.usersRepository.findById(id);

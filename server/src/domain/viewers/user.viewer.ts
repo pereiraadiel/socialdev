@@ -13,7 +13,12 @@ export class UserViewer {
     return {
       id: this.entity.id,
       username: this.entity.username,
+      firstName: this.entity.firstName,
+      lastName: this.entity.lastName,
+      biography: this.entity.biography,
       pictureURL: this.entity.pictureURL,
+      fans: this.entity.fans.length,
+      heroes: this.entity.heroes.length,
       createdAt: this.entity.createdAt,
       updatedAt: this.entity.updatedAt,
     };
@@ -30,15 +35,8 @@ export class UserViewer {
   response() {
     return {
       ...this.maskedResponse(),
-      firstName: this.entity.firstName,
-      lastName: this.entity.lastName,
-      biography: this.entity.biography,
       fans: this.entity.fans,
       heroes: this.entity.heroes,
-      myFriends: this.entity.myFriends,
-      skills: this.entity.skills,
-      communities: this.entity.communities,
-      depoiments: this.entity.depoiments,
     };
   }
 }

@@ -13,12 +13,6 @@ export class UsersPrismaRepository implements UsersRepository {
         ...user,
         fans: undefined,
         heroes: undefined,
-        myFriends: undefined,
-        friends: undefined,
-        skills: undefined,
-        skillVotes: undefined,
-        communities: undefined,
-        depoiments: undefined,
       },
     });
 
@@ -78,12 +72,6 @@ export class UsersPrismaRepository implements UsersRepository {
         ...user,
         fans: undefined,
         heroes: undefined,
-        myFriends: undefined,
-        friends: undefined,
-        skills: undefined,
-        skillVotes: undefined,
-        communities: undefined,
-        depoiments: undefined,
       },
     });
 
