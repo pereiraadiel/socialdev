@@ -1,5 +1,5 @@
-version: '3'
-services: 
+version: "3"
+services:
   pg:
     image: postgres:latest
     ports:
@@ -10,3 +10,19 @@ services:
       POSTGRES_DB: socialdev
     volumes:
       - ./volumes/pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - pg
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@pg:5432/socialdev
+      JWT_SECRET: secret
+    volumes:
+      - ./server:/app
+      - ./npm-logs:/root/.npm/_logs
+    restart: always

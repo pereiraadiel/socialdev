@@ -5,7 +5,6 @@ export class FanbaseViewer {
 
   setEntity(entity: FanbaseEntity) {
     this.entity = entity;
-    console.log(entity, 'fanbase viewer');
     return this;
   }
 
