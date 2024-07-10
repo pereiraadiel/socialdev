@@ -51,6 +51,10 @@ export class FanbasePrismaRepository implements FanbaseRepository {
       where: {
         heroId,
       },
+      include: {
+        hero: true,
+        fan: true,
+      },
     });
 
     return entities.map((entity) => new FanbaseEntity(entity));
@@ -60,6 +64,10 @@ export class FanbasePrismaRepository implements FanbaseRepository {
     const entities = await this.prisma.fanbase.findMany({
       where: {
         fanId,
+      },
+      include: {
+        hero: true,
+        fan: true,
       },
     });
 

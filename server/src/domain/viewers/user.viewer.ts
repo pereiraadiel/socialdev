@@ -35,8 +35,8 @@ export class UserViewer {
   response() {
     return {
       ...this.maskedResponse(),
-      fans: this.entity.fans,
-      heroes: this.entity.heroes,
+      fans: this.entity.fans.length,
+      heroes: this.entity.heroes.length,
     };
   }
 }

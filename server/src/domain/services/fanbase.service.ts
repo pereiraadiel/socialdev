@@ -65,7 +65,7 @@ export class FanbaseService {
         throw new BadRequestException('You are not a fan of this hero');
       }
 
-      console.log(fanbase);
+      await this.fanbaseRepository.delete(fanbase.heroId, fanbase.fanId);
 
       return this.fanbaseViewer.setEntity(fanbase).response();
     } catch (error) {
@@ -73,6 +73,32 @@ export class FanbaseService {
       if (error instanceof BadRequestException) {
         throw error;
       }
+      throw new UnprocessableEntityException();
+    }
+  }
+
+  async getFansByHeroId(heroId: string) {
+    try {
+      const fans = await this.fanbaseRepository.findManyByHeroId(heroId);
+
+      return fans.map((fan) =>
+        this.fanbaseViewer.setEntity(fan).fanOnlyResponse(),
+      );
+    } catch (error) {
+      console.error(error);
+      throw new UnprocessableEntityException();
+    }
+  }
+
+  async getHeroesByFanId(fanId: string) {
+    try {
+      const heroes = await this.fanbaseRepository.findManyByFanId(fanId);
+
+      return heroes.map((hero) =>
+        this.fanbaseViewer.setEntity(hero).heroOnlyResponse(),
+      );
+    } catch (error) {
+      console.error(error);
       throw new UnprocessableEntityException();
     }
   }
