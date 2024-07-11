@@ -5,6 +5,7 @@ import { UsersController } from '../controllers/users.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthConstants } from '../../constants/auth.constant';
 import { FanbaseController } from '../controllers/fanbase.controller';
+import { PostsController } from '../controllers/posts.controller';
 
 @Module({
   imports: [
@@ -15,7 +16,12 @@ import { FanbaseController } from '../controllers/fanbase.controller';
       signOptions: { expiresIn: '60s' },
     }),
   ],
-  controllers: [AuthController, UsersController, FanbaseController],
+  controllers: [
+    AuthController,
+    UsersController,
+    FanbaseController,
+    PostsController,
+  ],
   providers: [],
 })
 export class ControllersModule {}

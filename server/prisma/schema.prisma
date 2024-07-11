@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -25,16 +25,40 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  fans   Fanbase[] @relation("fans")
-  heroes Fanbase[] @relation("heroes")
+  fans       Fanbase[]   @relation("fans")
+  heroes     Fanbase[]   @relation("heroes")
+  likedPosts LikedPost[]
+  posts      Post[]
 }
 
 model Fanbase {
   heroId String
   fanId  String
 
-  hero User @relation("fans", fields: [heroId], references: [id], map: "fanbase_heroId_fk")
-  fan  User @relation("heroes", fields: [fanId], references: [id], map: "fanbase_fanId_fk")
+  hero User @relation("fans", fields: [heroId], references: [id], map: "fanbase_heroId_fk", onDelete: Cascade)
+  fan  User @relation("heroes", fields: [fanId], references: [id], map: "fanbase_fanId_fk", onDelete: Cascade)
 
   @@id([heroId, fanId])
+}
+
+model Post {
+  id        String      @id @default(nanoid())
+  ownerId   String
+  title     String
+  content   String
+  slug      String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  likes     LikedPost[]
+  owner     User        @relation(fields: [ownerId], references: [id])
+}
+
+model LikedPost {
+  userId String
+  postId String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
 }

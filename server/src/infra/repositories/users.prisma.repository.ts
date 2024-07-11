@@ -72,6 +72,7 @@ export class UsersPrismaRepository implements UsersRepository {
         ...user,
         fans: undefined,
         heroes: undefined,
+        updatedAt: new Date(),
       },
     });
 
