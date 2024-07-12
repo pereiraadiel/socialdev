@@ -24,16 +24,21 @@ export class FeedService {
     private readonly postViewer: PostViewer,
   ) {}
 
-  async getHeroesPosts(userId: string, page = 1, pageSize = 10) {
+  async getHeroesPosts(userId: string, pag = 1, pagSize = 10) {
     try {
+      const page = Number(pag - 1) || 0;
+      const pageSize = Number(pagSize) || 10;
       const user = await this.usersRepository.findById(userId);
       const heroes = user.heroes.map((hero) => hero.heroId);
 
+      console.log(page, pageSize, heroes, userId);
       const posts = await this.postsRepository.findManyByHeroes(
         heroes,
         page,
         pageSize,
       );
+
+      console.log(posts);
 
       return posts.map((post) => this.postViewer.setPost(post).response());
     } catch (error) {

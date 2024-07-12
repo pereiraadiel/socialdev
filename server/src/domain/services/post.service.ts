@@ -30,7 +30,9 @@ export class PostService {
 
   async create(dto: CreatePostBodyDTO, ownerId: string) {
     try {
+      const title = dto.title;
       const slug = dto.title.replaceAll(' ', '-').toLowerCase();
+      dto.title = title;
       const alreadyExists = await this.postsRepository.findBySlug(slug);
       if (alreadyExists) {
         throw new ConflictException('Already exists an post with this slug');

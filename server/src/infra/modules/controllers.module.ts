@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthConstants } from '../../constants/auth.constant';
 import { FanbaseController } from '../controllers/fanbase.controller';
 import { PostsController } from '../controllers/posts.controller';
+import { FeedController } from '../controllers/feed.controller';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PostsController } from '../controllers/posts.controller';
     UsersController,
     FanbaseController,
     PostsController,
+    FeedController,
   ],
   providers: [],
 })
