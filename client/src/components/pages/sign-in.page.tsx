@@ -3,6 +3,7 @@ import InputField from '../atoms/input-field.atom';
 import Button from '../atoms/button.atom';
 import Form from '../molecules/form.molecule';
 import { Link, useNavigate } from 'react-router-dom';
+import { ApiIntegration } from '../../integrations/api.integration';
 
 const SignInPage = () => {
   const [username, setUsername] = useState('');
@@ -13,15 +14,12 @@ const SignInPage = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 		setIsLoading(true);
-    // Implement your sign-in logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
-		setTimeout(() => {
-			setIsLoading(false);
-			setUsername('');
-			setPassword('');
-			navigate('/')
-		}, 5000);
+    ApiIntegration.authenticateUser(username, password)
+      .then(response => {
+        setIsLoading(false);
+        navigate('/');
+      })
+      .catch(error => { console.error(error) });
   };
 
   return (

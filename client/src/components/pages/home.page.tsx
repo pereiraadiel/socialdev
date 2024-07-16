@@ -1,27 +1,36 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import MainTemplate from '../templates/main.template';
 import Post from '../organisms/post.organism';
 import Pagination from '../molecules/pagination.molecule';
+import FloatButton from '../atoms/float-button.atom';
+import NewPostModalOrganism from '../organisms/new-post-modal.organism';
+import { ApiIntegration } from '../../integrations/api.integration';
+import { PostInterface } from '../../interfaces/post.interface';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [posts, setPosts] = useState<PostInterface[]>([]);
+  const navigate = useNavigate();
   const postsPerPage = 5;
 
-  const posts = useMemo(() => [
-    {id: 'asfsao', author: {
-      id: 'dasfasf',
-      username: 'adiel',
-      fullname: 'Adiel Pereira',
-      pictureURL: 'https://picsum.photos/seed/adiel/200/200',
-      fans: 2,
-      heroes: 1,
-      createdAt: '',
-      updatedAt: ''
-    }, title: 'Primeiro post', content: 'Conteudo do primeiro post'}
-  ], []);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      ApiIntegration.getPosts().then(response => {
+        setPosts(response);
+      }).catch((error) => {
+        console.error(error)
+        if(error.message === 'Você não está autenticado, por favor faça login') {
+          navigate('/sign/in');
+        }
+      });
+    };
+    fetchPosts();
+  }, [navigate]);
 
   const totalPages = Math.ceil(posts.length / postsPerPage);
 	const [displayedPosts, setDisplayedPosts] = useState<typeof posts>([]);
+  const [openNewPostModal, setOpenNewPostModal] = useState(false);
 
 	useEffect(() => {
 		setDisplayedPosts([])
@@ -32,16 +41,22 @@ const HomePage = () => {
     setCurrentPage(page);
   };
 
+  const userHasLikedPost = (postId: string) => {
+    return postId === 'asfsao';
+  }
+
   return (
     <MainTemplate>
       {displayedPosts.map((post) => (
-        <Post key={post.id} post={post} />
+        <Post key={post.id} post={post} isLiked={userHasLikedPost(post.id)} />
       ))}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
+      <FloatButton text='Novo post' onClick={() => setOpenNewPostModal(true)}/>
+      <NewPostModalOrganism isOpen={openNewPostModal} onClose={() => {setOpenNewPostModal(false)}}/>
     </MainTemplate>
   );
 };

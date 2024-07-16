@@ -8,6 +8,9 @@ type PostAuthorProps = {
 };
 
 const PostAuthor: React.FC<PostAuthorProps> = ({ user, className, onClick }) =>  {
+	if(!user) {
+		return null
+	}
 	return (
 		<div className={`flex items-center space-x-4 bg-gray-100 w-[240px] p-1 rounded-lg ${className} cursor-pointer`} onClick={onClick}>
 			<UserAvatar src={user.pictureURL} alt={`${user.fullname}'s avatar`} size='sm' />
