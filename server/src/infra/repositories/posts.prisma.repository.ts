@@ -15,7 +15,6 @@ export class PostsPrismaRepository implements PostsRepository {
         title: post.slug,
         createdAt: post.createdAt,
         id: post.id,
-        // likes: post.likes,
         updatedAt: post.updatedAt,
         owner: {
           connect: {
@@ -34,6 +33,7 @@ export class PostsPrismaRepository implements PostsRepository {
         id,
       },
       include: {
+        owner: true,
         likes: {
           include: {
             user: true,
@@ -53,6 +53,7 @@ export class PostsPrismaRepository implements PostsRepository {
         slug,
       },
       include: {
+        owner: true,
         likes: {
           include: {
             user: true,
@@ -70,6 +71,14 @@ export class PostsPrismaRepository implements PostsRepository {
     const entities = await this.prisma.post.findMany({
       skip: page * pageSize,
       take: pageSize,
+      include: {
+        owner: true,
+        likes: {
+          include: {
+            user: true,
+          },
+        },
+      },
     });
 
     return entities.map((entity) => new PostEntity(entity));
@@ -92,6 +101,14 @@ export class PostsPrismaRepository implements PostsRepository {
       },
       orderBy: {
         createdAt: 'asc',
+      },
+      include: {
+        owner: true,
+        likes: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

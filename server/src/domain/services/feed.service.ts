@@ -32,13 +32,16 @@ export class FeedService {
       const heroes = user.heroes.map((hero) => hero.heroId);
 
       console.log(page, pageSize, heroes, userId);
+      if (heroes.length === 0) {
+        const posts = await this.postsRepository.findMany(page, pageSize);
+        return posts.map((post) => this.postViewer.setPost(post).response());
+      }
+
       const posts = await this.postsRepository.findManyByHeroes(
         heroes,
         page,
         pageSize,
       );
-
-      console.log(posts);
 
       return posts.map((post) => this.postViewer.setPost(post).response());
     } catch (error) {
