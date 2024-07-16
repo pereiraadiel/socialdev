@@ -58,6 +58,30 @@ export class ApiIntegration {
     }
   }
 
+  static async getUser(username?: string) {
+    try {
+      const response = await this.axiosInstance.get<UserInterface>(
+        `users/${username}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      const user = response.data;
+      console.log(user);
+      user.fullname = user.firstName + " " + user.lastName;
+      return user;
+    } catch (error) {
+      if (
+        (error as any).message.includes("Request failed with status code 401")
+      ) {
+        throw new Error("Você não está autenticado, por favor faça login");
+      }
+      throw error;
+    }
+  }
+
   static async getProfile() {
     const response = await fetch("http://localhost:3001/profile");
     return response.json();

@@ -20,8 +20,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  async getById(@Param() { id }: GetUserByIdDTO) {
-    return await this.usersService.getById(id);
+  async getByUsername(@Param() { id }: GetUserByIdDTO) {
+    return await this.usersService.getByUsername(id);
   }
 
   @Get(':id/fans')

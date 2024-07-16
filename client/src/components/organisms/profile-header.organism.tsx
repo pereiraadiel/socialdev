@@ -38,7 +38,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, isOwnProfile }) => 
 				</div>
 			</div>
 	
-			{isOwnProfile && (
+			{!isOwnProfile && (
 				<button className='bg-blue-500 text-white px-4 py-2 rounded-lg absolute bottom-[-20%] left-[50%] translate-x-[-50%] uppercase flex items-center' onClick={handleFanClick}>
 					{	loggedUserIsFan ? (
 						<>
