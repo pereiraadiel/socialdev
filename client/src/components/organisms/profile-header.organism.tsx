@@ -1,7 +1,8 @@
 import { Heart, HeartOff, Star } from 'lucide-react';
 import UserInfo from '../molecules/user-info.molecule';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserInterface } from '../../interfaces/user.interface';
+import { ApiIntegration } from '../../integrations/api.integration';
 
 type ProfileHeaderProps = {
 	user: UserInterface,
@@ -12,8 +13,38 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, isOwnProfile }) => 
 
 	const [loggedUserIsFan, setLoggedUserIsFan] = useState(false);
 	
+
+	useEffect(() => {
+		ApiIntegration.getFans(user.id)
+			.then(fans => {
+				const loggedUsername = localStorage.getItem('@socialdev:username');
+				const isFan = fans.some(fan => fan.username === loggedUsername);
+				setLoggedUserIsFan(isFan)
+			})
+			.catch(error => {
+				setLoggedUserIsFan(false)
+			});
+	}, [user])
+
 	const handleFanClick = () => {
-		setLoggedUserIsFan(!loggedUserIsFan);
+		if(loggedUserIsFan) {
+			ApiIntegration.stopBeingFan(user.id)
+			.then(() => {
+				setLoggedUserIsFan(false)
+			})
+			.catch(error => {
+				setLoggedUserIsFan(true)
+			});
+		}
+		else {
+			ApiIntegration.becomeFan(user.id)
+			.then(() => {
+				setLoggedUserIsFan(true)
+			})
+			.catch(error => {
+				setLoggedUserIsFan(false)
+			});
+		}
 	}
 
 	return (

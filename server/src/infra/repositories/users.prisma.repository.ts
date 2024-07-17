@@ -40,6 +40,10 @@ export class UsersPrismaRepository implements UsersRepository {
       where: {
         username,
       },
+      include: {
+        fans: true,
+        heroes: true,
+      },
     });
 
     if (!entity) return null;

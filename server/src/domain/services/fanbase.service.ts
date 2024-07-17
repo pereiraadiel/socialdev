@@ -102,4 +102,18 @@ export class FanbaseService {
       throw new UnprocessableEntityException();
     }
   }
+
+  async suggestHeroes(fanId: string) {
+    try {
+      const heroes =
+        await this.fanbaseRepository.findManyHeroesNotFanOfFan(fanId);
+
+      return heroes.map((hero) =>
+        this.fanbaseViewer.setEntity(hero).heroOnlyResponse(),
+      );
+    } catch (error) {
+      console.error(error);
+      throw new UnprocessableEntityException();
+    }
+  }
 }

@@ -55,6 +55,18 @@ export class PostService {
     }
   }
 
+  async getManyByOwnerId(ownerId: string) {
+    try {
+      const posts = await this.postsRepository.findManyByOwnerId(ownerId);
+      return posts.map((post) =>
+        this.postViewer.setPost(post).maskedResponse(),
+      );
+    } catch (error) {
+      console.error(error);
+      throw new UnprocessableEntityException();
+    }
+  }
+
   async like(userId: string, postId: string) {
     try {
       const alreadyLiked =

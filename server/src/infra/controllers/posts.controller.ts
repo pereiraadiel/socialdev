@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Req,
@@ -10,7 +11,7 @@ import {
 import { PostService } from '../../domain/services/post.service';
 import { RequestWithUser } from './dtos/request.dto';
 import { AuthGuard } from '../guards/auth.guard';
-import { CreatePostBodyDTO } from './dtos/post.dto';
+import { CreatePostBodyDTO, GetManyPostsQueryDTO } from './dtos/post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -21,6 +22,12 @@ export class PostsController {
   async create(@Req() req: RequestWithUser, @Body() body: CreatePostBodyDTO) {
     const id = req.user.id;
     return await this.postsService.create(body, id);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard)
+  async getManyByOwnerId(@Param() { ownerId }: GetManyPostsQueryDTO) {
+    return await this.postsService.getManyByOwnerId(ownerId);
   }
 
   @Post(':id/like')

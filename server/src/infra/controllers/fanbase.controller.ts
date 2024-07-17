@@ -1,6 +1,7 @@
 import {
   Controller,
   Delete,
+  Get,
   Post,
   Query,
   Req,
@@ -33,5 +34,12 @@ export class FanbaseController {
   ) {
     const fanId = req.user.id;
     return await this.fanbaseService.stopBeingFan(fanId, heroId);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard)
+  async suggestHeroes(@Req() req: RequestWithUser) {
+    const fanId = req.user.id;
+    return await this.fanbaseService.suggestHeroes(fanId);
   }
 }

@@ -9,3 +9,8 @@ export class CreatePostBodyDTO {
   @Length(30)
   content: string;
 }
+
+export class GetManyPostsQueryDTO {
+  @IsString()
+  ownerId: string;
+}

@@ -17,6 +17,7 @@ export class LikedPostPrismaRepository implements LikedPostRepository {
         user: true,
         post: {
           include: {
+            owner: true,
             likes: true,
           },
         },
@@ -41,6 +42,7 @@ export class LikedPostPrismaRepository implements LikedPostRepository {
         user: true,
         post: {
           include: {
+            owner: true,
             likes: true,
           },
         },
@@ -63,6 +65,7 @@ export class LikedPostPrismaRepository implements LikedPostRepository {
         user: true,
         post: {
           include: {
+            owner: true,
             likes: true,
           },
         },
@@ -81,6 +84,7 @@ export class LikedPostPrismaRepository implements LikedPostRepository {
         user: true,
         post: {
           include: {
+            owner: true,
             likes: true,
           },
         },

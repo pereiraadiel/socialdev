@@ -84,6 +84,32 @@ export class PostsPrismaRepository implements PostsRepository {
     return entities.map((entity) => new PostEntity(entity));
   }
 
+  async findManyByOwnerId(
+    ownerId: string,
+    page?: number,
+    pageSize?: number,
+  ): Promise<PostEntity[]> {
+    const entities = await this.prisma.post.findMany({
+      skip: page * pageSize,
+      take: pageSize,
+      where: {
+        owner: {
+          id: ownerId,
+        },
+      },
+      include: {
+        owner: true,
+        likes: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    return entities.map((entity) => new PostEntity(entity));
+  }
+
   async findManyByHeroes(
     heroIds: string[],
     page: number,

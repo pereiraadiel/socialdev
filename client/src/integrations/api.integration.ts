@@ -82,11 +82,6 @@ export class ApiIntegration {
     }
   }
 
-  static async getProfile() {
-    const response = await fetch("http://localhost:3001/profile");
-    return response.json();
-  }
-
   static async authenticateUser(username: string, password: string) {
     try {
       const response = await this.axiosInstance.post("/sign/in", {
@@ -108,12 +103,179 @@ export class ApiIntegration {
       throw error;
     }
   }
-}
 
-/**
- * { token: {…}, user: {…} }
-​
-token: Object { access: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlhFTzNTeHlDM2hQdXo2eXN2LXAzYiIsInVzZXJuYW1lIjoiYWRpZWwiLCJmdWxsbmFtZSI6IkFkaWVsIERldiIsImlhdCI6MTcyMTE0NzcxMiwiZXhwIjoxNzIxMjM0MTEyfQ.3D0skxCHGS8DH0jq6e0OMoKijkodHiMoxLigTel67kQ", refresh: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlhFTzNTeHlDM2hQdXo2eXN2LXAzYiIsInVzZXJuYW1lIjoiYWRpZWwiLCJmdWxsbmFtZSI6IkFkaWVsIERldiIsImlhdCI6MTcyMTE0NzcxMiwiZXhwIjoxNzIxNDA2OTEyfQ.xZD_mS4RC_7KNJMnB7oS11pYyOsUXuqSTd4k8PQCTu0" }
-​
-user: Object { id: "XEO3SxyC3hPuz6ysv-p3b", username: "adiel", fullname: "Adiel Dev" }
- */
+  static async refreshAuthentication() {
+    try {
+      const response = await this.axiosInstance.post("/sign/refresh", {
+        refreshToken: this.refreshToken,
+      });
+      console.log(response.data);
+
+      localStorage.setItem("@socialdev:token", response.data.token.access);
+      localStorage.setItem(
+        "@socialdev:refreshtoken",
+        response.data.token.refresh
+      );
+      return response.data;
+    } catch (error) {
+      if (
+        (error as any).message.includes("Request failed with status code 401")
+      ) {
+        throw new Error("Autenticação expirada, por favor faça login");
+      }
+      throw error;
+    }
+  }
+
+  static async registerUser(user: UserInterface) {
+    try {
+      const response = await this.axiosInstance.post("/sign/up", user);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async becomeFan(userId: string) {
+    try {
+      const response = await this.axiosInstance.post(
+        `/fanbase?heroId=${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async stopBeingFan(userId: string) {
+    try {
+      const response = await this.axiosInstance.delete(
+        `/fanbase?heroId=${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getFans(userId: string) {
+    try {
+      const response = await this.axiosInstance.get<UserInterface[]>(
+        `/users/${userId}/fans`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      const fans = response.data;
+      console.log(fans);
+      return fans;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getHeroes(userId: string) {
+    try {
+      const response = await this.axiosInstance.get<UserInterface[]>(
+        `/users/${userId}/heroes`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      const fans = response.data;
+      console.log(fans);
+      return fans;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getSuggestedHeroes() {
+    try {
+      const response = await this.axiosInstance.get<UserInterface[]>(
+        `/fanbase`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      const heroes = response.data;
+      console.log(heroes);
+      return heroes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async likePost(postId: string) {
+    try {
+      const response = await this.axiosInstance.post(
+        `/posts/${postId}/like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async unlikePost(postId: string) {
+    try {
+      const response = await this.axiosInstance.delete(
+        `/posts/${postId}/unlike`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getPostsByOwnerId(ownerId: string) {
+    try {
+      const response = await this.axiosInstance.get<PostInterface[]>(
+        `/posts?ownerId=${ownerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      );
+      const posts = response.data;
+      console.log(posts);
+      return posts;
+    } catch (error) {
+      throw error;
+    }
+  }
+}

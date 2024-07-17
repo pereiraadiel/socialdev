@@ -3,13 +3,15 @@ import { PostInterface } from "../../interfaces/post.interface";
 import PostAuthor from "../molecules/post-author.molecule";
 import { useNavigate } from "react-router-dom";
 import { Heart, HeartCrack } from "lucide-react";
+import { ApiIntegration } from "../../integrations/api.integration";
 
 type PostProps = {
   post: PostInterface;
   isLiked?: boolean;
+  onToggleLike?: (isLiked: boolean) => void;
 }
 
-const Post: React.FC<PostProps> = ({ post, isLiked = false }) => {
+const Post: React.FC<PostProps> = ({ post, isLiked = false, onToggleLike }) => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate()
 
@@ -25,6 +27,26 @@ const Post: React.FC<PostProps> = ({ post, isLiked = false }) => {
     navigate(`/u/${post.owner.username}`);
   }
 
+  const handleLike = () => {
+    ApiIntegration.likePost(post.id)
+    .then(() => {
+      onToggleLike && onToggleLike(true);
+    })
+    .catch((error) => {
+      console.error(error)
+    });
+  }
+
+  const handleUnlike = () => {
+    ApiIntegration.unlikePost(post.id)
+    .then(() => {
+      onToggleLike && onToggleLike(false);
+    })
+    .catch((error) => {
+      console.error(error)
+    });
+  }
+
   return (
     <div className="bg-white shadow-md rounded p-4 mb-4 relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {isHovered && (
@@ -35,9 +57,9 @@ const Post: React.FC<PostProps> = ({ post, isLiked = false }) => {
 
       <div className="flex items-center mt-2">
         {isLiked ? (
-          <HeartCrack color="#09f" fill="#05f" className="cursor-pointer"/>
+          <HeartCrack color="#09f" fill="#05f" className="cursor-pointer" onClick={handleUnlike}/>
         ) : (
-          <Heart color="#09f" className="cursor-pointer"/>
+          <Heart color="#09f" className="cursor-pointer" onClick={handleLike}/>
         )}
         <p className="ml-2">{post.likes} curtidas</p>
       </div>
