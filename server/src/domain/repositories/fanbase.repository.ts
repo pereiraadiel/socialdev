@@ -10,6 +10,5 @@ export interface FanbaseRepository {
   ): Promise<FanbaseEntity | null>;
   findManyByHeroId(heroId: string): Promise<FanbaseEntity[]>; // get all fans of the heroId
   findManyByFanId(fanId: string): Promise<FanbaseEntity[]>; // get all heroes of the fanId
-  findManyHeroesNotFanOfFan(fanId: string): Promise<FanbaseEntity[]>; // get all heroes that the fanId is not a fan of
   delete(heroId: string, fanId: string): Promise<void>;
 }

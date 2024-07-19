@@ -32,6 +32,15 @@ export class UserViewer {
     };
   }
 
+  minimalResponse() {
+    return {
+      id: this.entity.id,
+      username: this.entity.username,
+      fullname: `${this.entity.firstName} ${this.entity.lastName}`,
+      pictureURL: this.entity.pictureURL,
+    };
+  }
+
   response() {
     return {
       ...this.maskedResponse(),

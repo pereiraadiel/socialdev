@@ -60,6 +60,22 @@ export class UsersPrismaRepository implements UsersRepository {
     return entities.map((entity) => new UserEntity(entity));
   }
 
+  async findManyNotHeroOfUserId(userId: string): Promise<UserEntity[]> {
+    const entities = await this.prisma.user.findMany({
+      where: {
+        NOT: {
+          fans: {
+            some: {
+              fanId: userId,
+            },
+          },
+        },
+      },
+    });
+
+    return entities.map((entity) => new UserEntity(entity));
+  }
+
   async count(page: number, pageSize: number): Promise<number> {
     return this.prisma.user.count({
       skip: page * pageSize,

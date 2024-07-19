@@ -74,32 +74,6 @@ export class FanbasePrismaRepository implements FanbaseRepository {
     return entities.map((entity) => new FanbaseEntity(entity));
   }
 
-  async findManyHeroesNotFanOfFan(fanId: string): Promise<FanbaseEntity[]> {
-    const entities = await this.prisma.fanbase.findMany({
-      where: {
-        NOT: {
-          fan: {
-            id: fanId,
-          },
-        },
-        AND: {
-          // prevent the suggest heroes containing the fanId (the user itself)
-          NOT: {
-            hero: {
-              id: fanId,
-            },
-          },
-        },
-      },
-      include: {
-        hero: true,
-        fan: true,
-      },
-    });
-
-    return entities.map((entity) => new FanbaseEntity(entity));
-  }
-
   async delete(heroId: string, fanId: string): Promise<void> {
     await this.prisma.fanbase.delete({
       where: {

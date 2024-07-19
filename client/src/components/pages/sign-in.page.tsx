@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import InputField from '../atoms/input-field.atom';
 import Button from '../atoms/button.atom';
 import Form from '../molecules/form.molecule';
@@ -9,6 +9,7 @@ const SignInPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
 	const navigate = useNavigate();
 
   const handleSubmit = (e: FormEvent) => {
@@ -17,10 +18,23 @@ const SignInPage = () => {
     ApiIntegration.authenticateUser(username, password)
       .then(response => {
         setIsLoading(false);
+        setIsLogged(true);
         navigate('/');
       })
       .catch(error => { console.error(error) });
   };
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('@socialdev:username');
+    if (storedUsername) {
+      setIsLogged(true);
+    }
+  }, []);
+
+  if(isLogged) {
+    navigate('/');
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">

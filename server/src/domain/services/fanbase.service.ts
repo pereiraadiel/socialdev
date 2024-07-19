@@ -9,13 +9,21 @@ import {
   FanbaseRepository,
 } from '../repositories/fanbase.repository';
 import { FanbaseViewer } from '../viewers/fanbase.viewer';
+import {
+  USERS_REPOSITORY,
+  UsersRepository,
+} from '../repositories/users.repository';
+import { UserViewer } from '../viewers/user.viewer';
 
 @Injectable()
 export class FanbaseService {
   constructor(
     @Inject(FANBASE_REPOSITORY)
     private readonly fanbaseRepository: FanbaseRepository,
+    @Inject(USERS_REPOSITORY)
+    private readonly usersRepository: UsersRepository,
     private readonly fanbaseViewer: FanbaseViewer,
+    private readonly userViewer: UserViewer,
   ) {}
 
   async becomeFan(fanId: string, heroId: string) {
@@ -103,13 +111,18 @@ export class FanbaseService {
     }
   }
 
-  async suggestHeroes(fanId: string) {
+  async suggestHeroes(userId: string) {
     try {
-      const heroes =
-        await this.fanbaseRepository.findManyHeroesNotFanOfFan(fanId);
+      const users = await this.usersRepository.findManyNotHeroOfUserId(userId);
 
-      return heroes.map((hero) =>
-        this.fanbaseViewer.setEntity(hero).heroOnlyResponse(),
+      // remove the user itself from the list
+      const index = users.findIndex((user) => user.id === userId);
+      if (index > -1) {
+        users.splice(index, 1);
+      }
+
+      return users.map((user) =>
+        this.userViewer.setUser(user).minimalResponse(),
       );
     } catch (error) {
       console.error(error);

@@ -23,7 +23,16 @@ const HomePage = () => {
     }).catch((error) => {
       console.error(error);
       if (error.message === 'Você não está autenticado, por favor faça login') {
-        navigate('/sign/in');
+        ApiIntegration.refreshAuthentication()
+        .then(() => {
+          fetchPosts().catch(() => {
+            alert('Erro ao buscar posts, por favor tente novamente')
+          })
+        })
+        .catch(() => {
+          ApiIntegration.logout();
+          navigate('/sign/in');
+        });
       }
     });
   }, [navigate]);

@@ -127,6 +127,13 @@ export class ApiIntegration {
     }
   }
 
+  static async logout() {
+    localStorage.removeItem("@socialdev:token");
+    localStorage.removeItem("@socialdev:refreshtoken");
+    localStorage.removeItem("@socialdev:username");
+    localStorage.removeItem("@socialdev:fullname");
+  }
+
   static async registerUser(user: UserInterface) {
     try {
       const response = await this.axiosInstance.post("/sign/up", user);

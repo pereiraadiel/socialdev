@@ -7,6 +7,7 @@ import Loader from '../atoms/loader.atom';
 import { ApiIntegration } from '../../integrations/api.integration';
 import { UserInterface } from '../../interfaces/user.interface';
 import { PostInterface } from '../../interfaces/post.interface';
+import FriendsModalOrganism from '../organisms/friends-modal.organism';
 
 const useProfileData = (username: string) => {
   const [user, setUser] = useState<UserInterface | null>(null);
@@ -54,6 +55,9 @@ const ProfilePage = () => {
 
   const { user, profilePosts } = useProfileData(username || '');
   const isOwnProfile = username === localUsername;
+  const [openFriendsModal, setOpenFriendsModal] = useState(false);
+  const [friendsModalTitle, setFriendsModalTitle] = useState('');
+  const [friends, setFriends] = useState<UserInterface[]>([]);
 
   // Fetch local username from localStorage
   useEffect(() => {
@@ -75,12 +79,30 @@ const ProfilePage = () => {
     setCurrentPage(page);
   };
 
+  const handleMyFansClick = () => {
+    if(!user) return;
+    ApiIntegration.getFans(user.id).then(fans => {
+      setFriends(fans);
+      setFriendsModalTitle('Meus Fãs');
+      setOpenFriendsModal(true);
+    }).catch();
+  }
+
+  const handleMyHeroesClick = () => {
+    if(!user) return;
+    ApiIntegration.getHeroes(user.id).then(heroes => {
+      setFriends(heroes);
+      setFriendsModalTitle('Meus Heróis');
+      setOpenFriendsModal(true);
+    }).catch();
+  }
+
   if (!user) {
     return <Loader />;
   }
 
   return (
-    <ProfileTemplate user={user} isOwnProfile={isOwnProfile}>
+    <ProfileTemplate user={user} isOwnProfile={isOwnProfile} onClickMyFans={handleMyFansClick} onClickMyHeroes={handleMyHeroesClick}>
       {displayedPosts.map((post) => (
         <Post key={post.id} post={post} />
       ))}
@@ -88,6 +110,12 @@ const ProfilePage = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+      />
+      <FriendsModalOrganism 
+        isOpen={openFriendsModal} 
+        onClose={() => setOpenFriendsModal(false)} 
+        friends={friends}
+        title={friendsModalTitle}
       />
     </ProfileTemplate>
   );

@@ -6,10 +6,12 @@ import { ApiIntegration } from '../../integrations/api.integration';
 
 type ProfileHeaderProps = {
 	user: UserInterface,
-	isOwnProfile: boolean
+	isOwnProfile: boolean,
+	onClickMyFans?: () => void,
+	onClickMyHeroes?: () => void,
 };
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, isOwnProfile }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, isOwnProfile, onClickMyFans, onClickMyHeroes }) => {
 
 	const [loggedUserIsFan, setLoggedUserIsFan] = useState(false);
 	
@@ -53,14 +55,14 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, isOwnProfile }) => 
 			<UserInfo user={user} />
 	
 			<div className='flex'>
-				<div className='bg-gray-100 p-2 rounded-lg mx-2 flex flex-col items-center w-[140px]'>
+				<div className='bg-gray-100 p-2 rounded-lg mx-2 flex flex-col items-center w-[140px] cursor-pointer select-none' onClick={onClickMyFans}>
 					<p className='flex items-center mx-2 mb-2'>
 						<Heart className='mx-2'/>
 						Fãs
 					</p>
 					<span className="ml-2 text-2xl">{user.fans}</span>
 				</div>
-				<div className='bg-gray-100 p-2 rounded-lg flex flex-col items-center w-[140px]'>
+				<div className='bg-gray-100 p-2 rounded-lg flex flex-col items-center w-[140px] cursor-pointer select-none' onClick={onClickMyHeroes}>
 					<p className='flex items-center mx-2 mb-2'>
 						<Star className='mx-2'/>
 						Heróis
