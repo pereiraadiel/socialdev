@@ -64,9 +64,9 @@ export class UsersPrismaRepository implements UsersRepository {
     const entities = await this.prisma.user.findMany({
       where: {
         NOT: {
-          fans: {
+          heroes: {
             some: {
-              fanId: userId,
+              heroId: userId,
             },
           },
         },

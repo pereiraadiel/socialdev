@@ -3,29 +3,31 @@ import { UserSex } from '../../../domain/enums/usersex.enum';
 
 export class SignInBodyDTO {
   @Matches(/^[a-zA-Z0-9]{4,}$/, {
-    message: 'username must be at least 4 characters long.',
+    message: 'o usuário deve ter pelo menos 4 caracteres.',
   })
   username: string;
 
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
     message:
-      'password must contain at least 1 letter and 1 number, and be at least 8 characters long.',
+      'a senha deve conter pelo menos 1 letra e 1 número e ter pelo menos 8 caracteres.',
   })
   password: string;
 }
 
 export class SignUpBodyDTO {
   @Matches(/^[a-zA-Z]{3,}$/, {
-    message: 'firstName must be at least 3 characters long.',
+    message: 'o nome deve ter pelo menos 3 caracteres.',
   })
   firstName: string;
 
   @Matches(/^[a-zA-Z]{3,}$/, {
-    message: 'lastName must be at least 3 characters long.',
+    message: 'o sobrenome deve ter pelo menos 3 caracteres.',
   })
   lastName: string;
 
-  @IsString()
+  @IsString({
+    message: 'a biografia deve ser preenchida',
+  })
   biography: string;
 
   @IsEnum(UserSex)
@@ -35,13 +37,13 @@ export class SignUpBodyDTO {
   pictureURL: string;
 
   @Matches(/^[a-zA-Z0-9]{4,}$/, {
-    message: 'username must be at least 4 characters long.',
+    message: 'o usuário deve ter pelo menos 4 caracteres.',
   })
   username: string;
 
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
     message:
-      'password must contain at least 1 letter and 1 number, and be at least 8 characters long.',
+      'a senha deve conter pelo menos 1 letra e 1 número e ter pelo menos 8 caracteres.',
   })
   password: string;
 }

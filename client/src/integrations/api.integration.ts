@@ -1,6 +1,9 @@
 import axios from "axios";
 import { PostInterface } from "../interfaces/post.interface";
-import { UserInterface } from "../interfaces/user.interface";
+import {
+  UserInterface,
+  UserRegisterInterface,
+} from "../interfaces/user.interface";
 export class ApiIntegration {
   private static accessToken = localStorage.getItem("@socialdev:token");
   private static refreshToken = localStorage.getItem("@socialdev:refreshtoken");
@@ -33,6 +36,20 @@ export class ApiIntegration {
       ) {
         throw new Error("Você não está autenticado, por favor faça login");
       }
+      throw error;
+    }
+  }
+
+  static async createPost(post: {title: string, content: string}) {
+    try {
+      const response = await this.axiosInstance.post("/posts", post, {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
       throw error;
     }
   }
@@ -134,7 +151,7 @@ export class ApiIntegration {
     localStorage.removeItem("@socialdev:fullname");
   }
 
-  static async registerUser(user: UserInterface) {
+  static async registerUser(user: UserRegisterInterface) {
     try {
       const response = await this.axiosInstance.post("/sign/up", user);
       console.log(response.data);

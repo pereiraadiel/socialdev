@@ -19,9 +19,12 @@ const SignInPage = () => {
       .then(response => {
         setIsLoading(false);
         setIsLogged(true);
-        navigate('/');
+        window.location.reload();
       })
-      .catch(error => { console.error(error) });
+      .catch(error => { 
+        console.error(error) 
+        setIsLoading(false)
+      });
   };
 
   useEffect(() => {

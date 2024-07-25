@@ -22,6 +22,14 @@ export class PostsPrismaRepository implements PostsRepository {
           },
         },
       },
+      include: {
+        owner: true,
+        likes: {
+          include: {
+            user: true,
+          },
+        },
+      },
     });
 
     return new PostEntity(entity);

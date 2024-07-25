@@ -47,6 +47,7 @@ export class PostService {
       console.log(entity);
 
       const post = await this.postsRepository.create(entity);
+      console.log(post);
       return this.postViewer.setPost(post).response();
     } catch (error) {
       console.error(error);

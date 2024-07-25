@@ -5,7 +5,7 @@ export class PostViewer {
 
   setPost(post: PostEntity) {
     this.entity = post;
-    delete this.entity.owner.password;
+    delete this.entity?.owner.password;
     return this;
   }
 
