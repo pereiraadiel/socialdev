@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import NavItem from '../molecules/navitem.molecule';
-import { User, Home, LogOut } from 'lucide-react'
+import { User, Home } from 'lucide-react'
 import Button from '../atoms/button.atom';
 import { ApiIntegration } from '../../integrations/api.integration';
 

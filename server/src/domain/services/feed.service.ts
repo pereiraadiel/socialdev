@@ -31,7 +31,6 @@ export class FeedService {
       const user = await this.usersRepository.findById(userId);
       const heroes = user.heroes.map((hero) => hero.heroId);
 
-      console.log(page, pageSize, heroes, userId);
       if (heroes.length === 0) {
         const posts = await this.postsRepository.findMany(page, pageSize);
         return posts.map((post) => this.postViewer.setPost(post).response());
@@ -45,7 +44,6 @@ export class FeedService {
 
       return posts.map((post) => this.postViewer.setPost(post).response());
     } catch (error) {
-      console.error(error);
       if (error instanceof ConflictException) throw error;
       throw new UnprocessableEntityException();
     }

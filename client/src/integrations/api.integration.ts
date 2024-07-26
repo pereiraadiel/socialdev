@@ -40,7 +40,7 @@ export class ApiIntegration {
     }
   }
 
-  static async createPost(post: {title: string, content: string}) {
+  static async createPost(post: { title: string; content: string }) {
     try {
       const response = await this.axiosInstance.post("/posts", post, {
         headers: {
@@ -252,7 +252,7 @@ export class ApiIntegration {
 
   static async likePost(postId: string) {
     try {
-      const response = await this.axiosInstance.post(
+      await this.axiosInstance.post(
         `/posts/${postId}/like`,
         {},
         {
@@ -261,8 +261,7 @@ export class ApiIntegration {
           },
         }
       );
-      console.log(response.data);
-      return response.data;
+      return true;
     } catch (error) {
       throw error;
     }
@@ -270,16 +269,12 @@ export class ApiIntegration {
 
   static async unlikePost(postId: string) {
     try {
-      const response = await this.axiosInstance.delete(
-        `/posts/${postId}/unlike`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      );
-      console.log(response.data);
-      return response.data;
+      await this.axiosInstance.delete(`/posts/${postId}/unlike`, {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
+      return true;
     } catch (error) {
       throw error;
     }

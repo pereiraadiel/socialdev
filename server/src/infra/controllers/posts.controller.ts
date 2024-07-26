@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -26,8 +27,17 @@ export class PostsController {
 
   @Get()
   @UseGuards(AuthGuard)
-  async getManyByOwnerId(@Param() { ownerId }: GetManyPostsQueryDTO) {
-    return await this.postsService.getManyByOwnerId(ownerId);
+  async getManyByOwnerId(
+    @Query() { ownerId, page, pageSize }: GetManyPostsQueryDTO,
+  ) {
+    const pageInt = page ? Number(page) - 1 : 0;
+    const pageSizeInt = pageSize ? Number(pageSize) : 10;
+
+    return await this.postsService.getManyByOwnerId(
+      ownerId,
+      pageInt,
+      pageSizeInt,
+    );
   }
 
   @Post(':id/like')

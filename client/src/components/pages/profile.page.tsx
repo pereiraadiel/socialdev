@@ -12,7 +12,7 @@ import FriendsModalOrganism from '../organisms/friends-modal.organism';
 const useProfileData = (username: string) => {
   const [user, setUser] = useState<UserInterface | null>(null);
   const [profilePosts, setProfilePosts] = useState<PostInterface[]>([]);
-  
+
   const fetchProfile = useCallback(async () => {
     try {
       const response = await ApiIntegration.getUser(username);
@@ -43,7 +43,7 @@ const useProfileData = (username: string) => {
     }
   }, [user, fetchPosts]);
 
-  return { user, profilePosts };
+  return { user, profilePosts, setProfilePosts };
 };
 
 const ProfilePage = () => {
@@ -53,13 +53,12 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const postsPerPage = 5;
 
-  const { user, profilePosts } = useProfileData(username || '');
+  const { user, profilePosts, setProfilePosts } = useProfileData(username || '');
   const isOwnProfile = username === localUsername;
   const [openFriendsModal, setOpenFriendsModal] = useState(false);
   const [friendsModalTitle, setFriendsModalTitle] = useState('');
   const [friends, setFriends] = useState<UserInterface[]>([]);
 
-  // Fetch local username from localStorage
   useEffect(() => {
     const storedUsername = localStorage.getItem('@socialdev:username');
     if (!storedUsername) {
@@ -79,41 +78,68 @@ const ProfilePage = () => {
     setCurrentPage(page);
   };
 
-  const handleMyFansClick = () => {
+  const handleToggleLike = async (isLiked: boolean, post: PostInterface) => {
     if(!user) return;
-    ApiIntegration.getFans(user.id).then(fans => {
-      setFriends(fans);
-      setFriendsModalTitle('Meus Fãs');
-      setOpenFriendsModal(true);
-    }).catch();
-  }
+
+    post.likedBy = isLiked 
+      ? post.likedBy.filter((like) => like.username !== localUsername) 
+      : [...post.likedBy, user];
+    
+    const posts = profilePosts.filter((p) => (p.id === post.id))
+    console.log('posts: ', posts);
+    setProfilePosts([...posts, post]);
+  };
+  
+
+  const handleMyFansClick = () => {
+    if (!user) return;
+    ApiIntegration.getFans(user.id)
+      .then((fans) => {
+        setFriends(fans);
+        setFriendsModalTitle('Meus Fãs');
+        setOpenFriendsModal(true);
+      })
+      .catch();
+  };
 
   const handleMyHeroesClick = () => {
-    if(!user) return;
-    ApiIntegration.getHeroes(user.id).then(heroes => {
-      setFriends(heroes);
-      setFriendsModalTitle('Meus Heróis');
-      setOpenFriendsModal(true);
-    }).catch();
-  }
+    if (!user) return;
+    ApiIntegration.getHeroes(user.id)
+      .then((heroes) => {
+        setFriends(heroes);
+        setFriendsModalTitle('Meus Heróis');
+        setOpenFriendsModal(true);
+      })
+      .catch();
+  };
+
+  const userHasLikedPost = (post: PostInterface) => {
+    const loggedUsername = localStorage.getItem('@socialdev:username');
+    return post.likedBy.some(like => like.username === loggedUsername);
+  };
 
   if (!user) {
     return <Loader />;
   }
 
   return (
-    <ProfileTemplate user={user} isOwnProfile={isOwnProfile} onClickMyFans={handleMyFansClick} onClickMyHeroes={handleMyHeroesClick}>
+    <ProfileTemplate
+      user={user}
+      isOwnProfile={isOwnProfile}
+      onClickMyFans={handleMyFansClick}
+      onClickMyHeroes={handleMyHeroesClick}
+    >
       {displayedPosts.map((post) => (
-        <Post key={post.id} post={post} />
+        <Post key={post.id} post={post} onToggleLike={(isLiked) => handleToggleLike(isLiked, post)} isLiked={userHasLikedPost(post)} />
       ))}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      <FriendsModalOrganism 
-        isOpen={openFriendsModal} 
-        onClose={() => setOpenFriendsModal(false)} 
+      <FriendsModalOrganism
+        isOpen={openFriendsModal}
+        onClose={() => setOpenFriendsModal(false)}
         friends={friends}
         title={friendsModalTitle}
       />

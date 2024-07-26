@@ -44,26 +44,23 @@ export class PostService {
         slug,
       });
 
-      console.log(entity);
-
       const post = await this.postsRepository.create(entity);
-      console.log(post);
       return this.postViewer.setPost(post).response();
     } catch (error) {
-      console.error(error);
       if (error instanceof ConflictException) throw error;
       throw new UnprocessableEntityException();
     }
   }
 
-  async getManyByOwnerId(ownerId: string) {
+  async getManyByOwnerId(ownerId: string, page = 0, pageSize = 10) {
     try {
-      const posts = await this.postsRepository.findManyByOwnerId(ownerId);
-      return posts.map((post) =>
-        this.postViewer.setPost(post).maskedResponse(),
+      const posts = await this.postsRepository.findManyByOwnerId(
+        ownerId,
+        page,
+        pageSize,
       );
+      return posts.map((post) => this.postViewer.setPost(post).response());
     } catch (error) {
-      console.error(error);
       throw new UnprocessableEntityException();
     }
   }
@@ -81,7 +78,6 @@ export class PostService {
       const likedPost = await this.likedPostsRepository.create(userId, postId);
       return this.postViewer.setPost(likedPost.post).maskedResponse();
     } catch (error) {
-      console.error(error);
       throw new UnprocessableEntityException();
     }
   }
@@ -96,7 +92,6 @@ export class PostService {
 
       await this.likedPostsRepository.delete(userId, postId);
     } catch (error) {
-      console.error(error);
       if (error instanceof BadRequestException) throw error;
       throw new UnprocessableEntityException();
     }
@@ -110,7 +105,6 @@ export class PostService {
       }
       await this.postsRepository.delete(slug);
     } catch (error) {
-      console.error(error);
       if (error instanceof NotFoundException) throw error;
       throw new UnprocessableEntityException();
     }

@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsOptional, IsString, Length } from 'class-validator';
 
 export class CreatePostBodyDTO {
   @IsString()
@@ -13,4 +13,10 @@ export class CreatePostBodyDTO {
 export class GetManyPostsQueryDTO {
   @IsString()
   ownerId: string;
+
+  @IsOptional()
+  page?: string;
+
+  @IsOptional()
+  pageSize?: string;
 }

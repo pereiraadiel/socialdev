@@ -44,7 +44,6 @@ export class FanbaseService {
 
       return this.fanbaseViewer.setEntity(fanbase).response();
     } catch (error) {
-      console.error(error.message);
       if (
         error.message.includes('Foreign key constraint failed on the field')
       ) {
@@ -77,7 +76,6 @@ export class FanbaseService {
 
       return this.fanbaseViewer.setEntity(fanbase).response();
     } catch (error) {
-      console.error(error);
       if (error instanceof BadRequestException) {
         throw error;
       }
@@ -93,7 +91,6 @@ export class FanbaseService {
         this.fanbaseViewer.setEntity(fan).fanOnlyResponse(),
       );
     } catch (error) {
-      console.error(error);
       throw new UnprocessableEntityException();
     }
   }
@@ -106,7 +103,6 @@ export class FanbaseService {
         this.fanbaseViewer.setEntity(hero).heroOnlyResponse(),
       );
     } catch (error) {
-      console.error(error);
       throw new UnprocessableEntityException();
     }
   }
@@ -125,7 +121,6 @@ export class FanbaseService {
         this.userViewer.setUser(user).minimalResponse(),
       );
     } catch (error) {
-      console.error(error);
       throw new UnprocessableEntityException();
     }
   }

@@ -101,9 +101,7 @@ export class PostsPrismaRepository implements PostsRepository {
       skip: page * pageSize,
       take: pageSize,
       where: {
-        owner: {
-          id: ownerId,
-        },
+        ownerId,
       },
       include: {
         owner: true,

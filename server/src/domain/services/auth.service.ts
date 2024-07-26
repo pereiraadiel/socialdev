@@ -50,7 +50,6 @@ export class AuthService {
         user: payload,
       };
     } catch (error) {
-      console.error(error);
       if (error instanceof UnauthorizedException) {
         throw new UnauthorizedException(error.message);
       }
@@ -107,7 +106,6 @@ export class AuthService {
         user: payload,
       };
     } catch (error) {
-      console.error(error);
       if (error instanceof UnauthorizedException) {
         throw new UnauthorizedException(error.message);
       }
