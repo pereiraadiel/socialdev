@@ -6,4 +6,4 @@
 Este projeto tem como objetivo aplicar de forma prática os conceitos de desenvolvimento web, incluindo `arquitetura limpa` (clean architecture) e `design atômico` (atomic design), utilizando as tecnologias `React.js`, `Node.js` e `NestJS`.
 
 ## :pushpin: Demonstração da Aplicação
-![Demo Social DEV](/social-dev.gif)
+![Demo Social DEV](/.github/social-dev.gif)
