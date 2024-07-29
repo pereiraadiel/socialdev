@@ -96,7 +96,7 @@ const ProfilePage = () => {
     ApiIntegration.getFans(user.id)
       .then((fans) => {
         setFriends(fans);
-        setFriendsModalTitle('Meus Fãs');
+        setFriendsModalTitle(`Fãs de ${user.firstName}`);
         setOpenFriendsModal(true);
       })
       .catch();
@@ -107,7 +107,7 @@ const ProfilePage = () => {
     ApiIntegration.getHeroes(user.id)
       .then((heroes) => {
         setFriends(heroes);
-        setFriendsModalTitle('Meus Heróis');
+        setFriendsModalTitle(`Heróis de ${user.firstName}`);
         setOpenFriendsModal(true);
       })
       .catch();
